@@ -35,14 +35,21 @@ public class MenuActivity extends AppCompatActivity {
             double latitud = -33.35557468918811;
             double longitud = -70.53296987503704;
 
-            // Crear el intent con la ubicación
-            Uri ubicacion = Uri.parse("geo:" + latitud + "," + longitud + "?q=" + latitud + "," + longitud + "(Mi+Ubicación)");
+            // ✅ FORMATO CORRECTO - Opción 1 (Más confiable)
+            Uri ubicacion = Uri.parse("geo:" + latitud + "," + longitud + "?q=" + latitud + "," + longitud + "(Doña+Mantequilla)");
             Intent intent = new Intent(Intent.ACTION_VIEW, ubicacion);
-            intent.setPackage("com.google.android.apps.maps");
+
+            // ✅ NO restringir solo a Google Maps app
+            // intent.setPackage("com.google.android.apps.maps"); // ← QUITA ESTA LÍNEA
 
             // Verificar que haya una app que lo maneje
             if (intent.resolveActivity(getPackageManager()) != null) {
                 startActivity(intent);
+            } else {
+                // ✅ FALLBACK: Si no hay app de mapas, abrir en navegador web
+                Uri webUri = Uri.parse("https://www.google.com/maps?q=" + latitud + "," + longitud);
+                Intent webIntent = new Intent(Intent.ACTION_VIEW, webUri);
+                startActivity(webIntent);
             }
         });
     }

@@ -23,11 +23,13 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        // In
+        // Referencia al botón definido en el XML
         Button btnComenzar = findViewById(R.id.comenzar);
 
+        //Metodo para el btnComenzar
         btnComenzar.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, MenuActivity.class);
+            // Crea un Intent para ir desde esta actividad (MainActivity) a la pantalla de Login (LoginActivity)
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
         });
     }
