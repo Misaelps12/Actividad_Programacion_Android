@@ -20,37 +20,57 @@ import com.google.android.material.textfield.TextInputLayout;
 
 public class LoginActivity extends AppCompatActivity {
 
-    // Layouts de los campos de email y contraseña
+
+
+    // Layouts de los campos de entrada (Material Design)
     private TextInputLayout emailLayout, passwordLayout;
-    // Campos de texto editables para ingresar email y contraseña
+
+    // Campos editables donde el usuario ingresa su email y contraseña
     private TextInputEditText etEmail, etPassword;
-    // Botón de login
+
+    // Botón principal de inicio de sesión
     private Button btnLogin;
-    // CheckBox para "Recordar usuario"
+
+    // CheckBox para recordar las credenciales
     private CheckBox cbRemember;
-    // TextViews para registro y recuperación de contraseña
+
+    // TextViews clicables: registrar cuenta nueva y recuperar contraseña
     private TextView tvRegister, tvForgotPassword;
 
-    // SharedPreferences para guardar datos locales como credenciales
+    // SharedPreferences: almacena datos de usuario localmente (correo y contraseña)
     private SharedPreferences sharedPreferences;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Habilita el diseño Edge-to-Edge (ocupa toda la pantalla, más moderno)
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
+
+        // Ajusta márgenes según las barras del sistema (status bar, navegación)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        initViews();              // Inicializa los elementos de la UI
-        setupSharedPreferences(); // Configura SharedPreferences para guardar/cargar credenciales
-        setupClickListeners();    // Configura los listeners para botones y textos clicables
+        // Inicializa todos los componentes visuales
+        initViews();
+
+        // Configura SharedPreferences y carga credenciales guardadas (si existen)
+        setupSharedPreferences();
+
+        // Define las acciones que ocurren al presionar botones o textos
+        setupClickListeners();
     }
 
-    //Inicialización de vistas
+
+
+
+    // Enlaza las variables Java con los elementos XML
     private void initViews() {
         emailLayout = findViewById(R.id.email);
         passwordLayout = findViewById(R.id.password);
@@ -62,32 +82,40 @@ public class LoginActivity extends AppCompatActivity {
         tvForgotPassword = findViewById(R.id.tvForgotPassword);
     }
 
+    // Configura SharedPreferences para guardar datos del usuario
     private void setupSharedPreferences() {
         sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
-        loadSavedCredentials(); // Si el usuario marcó "Recordar", carga email y contraseña
+        loadSavedCredentials(); // Si el usuario eligió “Recordar”, se completan los campos
     }
 
+    // Define qué sucede cuando se hace clic en los elementos interactivos
     private void setupClickListeners() {
-        // Botón de login
+        // Al presionar el botón “Login” se intenta iniciar sesión
         btnLogin.setOnClickListener(v -> attemptLogin());
 
-        // TextView registro → Intent explícito 1
+        // -------- Intent explícito 1 --------
+        // Abre la actividad de registro (RegistroActivity)
         tvRegister.setOnClickListener(v -> {
-            // Intent explícito 1: indica directamente abrir RegistroActivity
             Intent intent = new Intent(LoginActivity.this, RegistroActivity.class);
             startActivity(intent);
         });
 
-        // TextView recuperar contraseña → Intent implícito 1
+        // -------- Intent implícito 1 --------
+
+        // Llama al metodo que abre la app de correo para recuperar contraseña
         tvForgotPassword.setOnClickListener(v -> recoverPassword());
     }
 
+
+    // ---------- LÓGICA DE LOGIN ----------
+
+    // Verifica que los datos sean válidos y simula el inicio de sesión
     private void attemptLogin() {
-        if (validateFields()) { // Primero validar campos
+        if (validateFields()) { // Primero valida campos
             String email = etEmail.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
 
-            // Simular validación de credenciales
+            // Comprueba credenciales (solo ejemplo, sin base de datos real)
             if (authenticateUser(email, password)) {
                 handleSuccessfulLogin(email, password);
             } else {
@@ -96,15 +124,13 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    // Valida los campos de email y contraseña
     private boolean validateFields() {
-
-        // Validar que el email y contraseña no estén vacíos
-        // Validar formato de email y longitud mínima de contraseña
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
         boolean isValid = true;
 
-        // Validamos el email
+        // Validación del email
         if (email.isEmpty()) {
             emailLayout.setError("El correo no puede estar vacío");
             isValid = false;
@@ -115,7 +141,7 @@ public class LoginActivity extends AppCompatActivity {
             emailLayout.setError(null);
         }
 
-        // Validamos la  contraseña
+        // Validación de la contraseña
         if (password.isEmpty()) {
             passwordLayout.setError("La contraseña no puede estar vacía");
             isValid = false;
@@ -129,42 +155,54 @@ public class LoginActivity extends AppCompatActivity {
         return isValid;
     }
 
+    // Simula la autenticación de usuario con credenciales predefinidas
     private boolean authenticateUser(String email, String password) {
-        // Credenciales de prueba
+        // Credenciales de prueba (sin base de datos)
         return (email.equals("usuario@doamantequilla.com") && password.equals("123456")) ||
                 (email.equals("test@test.com") && password.equals("password"));
     }
 
+
+
+
     private void handleSuccessfulLogin(String email, String password) {
-        // Guardar o borrar credenciales según CheckBox "Recordar"
+        // Guarda o limpia credenciales según el CheckBox “Recordar”
         if (cbRemember.isChecked()) {
             saveCredentials(email, password);
         } else {
             clearCredentials();
         }
 
-        // Mostrar toast de éxito
+        // Muestra mensaje emergente de éxito
         Toast.makeText(this, "¡Login exitoso! 🎉", Toast.LENGTH_SHORT).show();
 
-        // Intent explícito 2: abrir MenuActivity y pasar email
+        // -------- Intent explícito 2 --------
+        // Abre la pantalla principal del menú
         Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
+
+        // Envía el email del usuario a la siguiente actividad
         intent.putExtra("user_email", email);
+
+        // Inicia MenuActivity
         startActivity(intent);
 
-        // Cerrar LoginActivity para no volver con el botón atrás
+        // Cierra LoginActivity (no se puede volver con el botón “Atrás”)
         finish();
     }
 
 
-    //Guardar, cargar y borrar credenciales
+
+
+    // Guarda credenciales si el usuario seleccionó “Recordar”
     private void saveCredentials(String email, String password) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("saved_email", email);
         editor.putString("saved_password", password);
         editor.putBoolean("remember_me", true);
-        editor.apply();
+        editor.apply(); // Guarda los cambios
     }
 
+    // Carga credenciales guardadas al abrir la app
     private void loadSavedCredentials() {
         boolean rememberMe = sharedPreferences.getBoolean("remember_me", false);
         if (rememberMe) {
@@ -176,6 +214,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    // Elimina credenciales guardadas si el usuario desmarca “Recordar”
     private void clearCredentials() {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove("saved_email");
@@ -184,15 +223,26 @@ public class LoginActivity extends AppCompatActivity {
         editor.apply();
     }
 
-    private void recoverPassword() {
-        // Intent implícito: abrir app de correo
-        Intent intent = new Intent(Intent.ACTION_SENDTO);
-        intent.setData(android.net.Uri.parse("mailto:soporte@donamantequilla.com"));
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Recuperación de contraseña - App DonaMantequilla");
-        intent.putExtra(Intent.EXTRA_TEXT, "Hola, necesito recuperar mi contraseña para la aplicación DoaMantequilla.\n\nMi email es: " + etEmail.getText().toString());
 
+
+    private void recoverPassword() {
+        // -------- Intent implícito 2 --------
+
+        // Crea un intent implícito para enviar correo a soporte
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+
+        // Indica que se trata de un correo electrónico
+        intent.setData(android.net.Uri.parse("mailto:soporte@donamantequilla.com"));
+
+        // Agrega asunto y cuerpo del mensaje
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Recuperación de contraseña - App DonaMantequilla");
+        intent.putExtra(Intent.EXTRA_TEXT,
+                "Hola, necesito recuperar mi contraseña para la aplicación DoaMantequilla.\n\n" +
+                        "Mi email es: " + etEmail.getText().toString());
+
+        // Verifica que exista una app de correo instalada antes de abrir el intent
         if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent); // Abre app de correo
+            startActivity(intent); // Abre la app de correo
         } else {
             Toast.makeText(this, "No hay aplicación de email instalada", Toast.LENGTH_SHORT).show();
         }
