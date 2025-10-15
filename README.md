@@ -13,9 +13,10 @@ Navegación fluida entre actividades
 
 Sistema de autenticación con validaciones
 
-Integración con mapas y servicios externos
+Integración con mapas, cámara y QR
 
 Diseño responsive para diferentes tamaños de pantalla
+
 
 
 🛠️ Tecnologías Utilizadas
@@ -36,6 +37,12 @@ ConstraintLayout
 
 CardView
 
+CameraX y ML Kit para QR y cámara
+
+
+
+
+
 📋 Estructura del Proyecto
 
 app/
@@ -54,6 +61,8 @@ app/
 
 Intents Explícitos (3/3)
 
+Origen       →   Destino	Descripción
+
 MainActivity → LoginActivity - Navegación inicial
 
 LoginActivity → RegistroActivity - Flujo de registro
@@ -62,17 +71,17 @@ LoginActivity → MenuActivity - Acceso al sistema
 
 
 
-🌐 Intents Implícitos (2/5)
+🌐 Intents Implícitos (5/5)
 
 📧 Enviar correo - Recuperación de contraseña - (Implementado)
 
 🗺️ Abrir mapa - Ubicación en Google Maps - (Implementado)
 
-🌐 Abrir página web - (Por implementar)
+🌐 Abrir página web - (Implementado)
 
-📷 Abrir Camara - (Por implementar)
+📷 Abrir Camara - (Implementado)
 
- Scanear qr - (Por implementar)
+ Scanear qr - (Implementado)
 
 
 🎮 Flujo de la Aplicación
@@ -88,7 +97,7 @@ Menú principal 👉 Acceder a funcionalidades
 
 📷 Abrir Camara
 
- Scanear qr
+ Escanear QR
 
 
 🔐 Credenciales de Prueba
@@ -133,20 +142,21 @@ Sistema de login funcional
 
 3 intents explícitos
 
-2 intents implícitos
+5 intents implícitos
+
+
 
 🔄 En Progreso:
 
-Completar RegistroActivity
+Mejoras en RegistroActivity
 
-Implementar 3 intents implícitos faltantes
-
-Mejorar validaciones
+Mejorar UX y validaciones adicionales
 
 Agregar pantalla de configuración
 
 
 👥 Autores
 Misael Enrique Oyarzún Martínez - Misaelps12 - misaeloyarzunm12@gmail.com
+
 
 
